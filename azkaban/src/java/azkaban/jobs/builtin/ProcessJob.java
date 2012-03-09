@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +121,14 @@ public class ProcessJob extends AbstractProcessJob implements Job {
                 errorGobbler.join(1000);
             } catch (InterruptedException e) {
             } finally {
+                try {
+                    OutputStream out = _process.getOutputStream();
+                    if (out != null) {
+                        out.close();
+                    }
+                } catch (IOException ex) {
+                    error("Error closing output stream");
+                }
                 outputGobbler.close();
                 errorGobbler.close();
             }
