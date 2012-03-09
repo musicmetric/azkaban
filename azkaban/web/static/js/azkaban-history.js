@@ -235,7 +235,13 @@ var headerRowfunc = function(data) {
 	$(durrationTd).text(getDuration(data));
 	
 	var statusTd = document.createElement("td");
-	$(statusTd).text(data.status);
+	if (data.status != "succeeded") {
+		$(statusTd).html($("<span>").addClass("failed").text(data.status));
+	}
+	else {
+		$(statusTd).text(data.status);
+	}
+
 	
 	var actionTd = document.createElement("td");
 	var actionA = document.createElement("a");
