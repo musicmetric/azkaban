@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -94,15 +95,14 @@ public class LocalFileScheduleLoader implements ScheduleLoader {
             	scheduleFile.renameTo(backupScheduleFile);
             }
 
-            HashMap<String,Object> obj = new HashMap<String,Object>();
-            ArrayList<Object> schedules = new ArrayList<Object>();
-            obj.put(SCHEDULE, schedules);
-            //Write out schedule.
-                       
+            // Write out schedule, sorted by ID
+            TreeMap<String, Object> schedules = new TreeMap<String, Object>();
             for (ScheduledJob schedJob : schedule) {
-            	schedules.add(createJSONObject(schedJob));
+            	schedules.put(schedJob.getId(), createJSONObject(schedJob));
             }
  
+            HashMap<String,Object> obj = new HashMap<String,Object>();
+            obj.put(SCHEDULE, schedules.values());
     		try {
     			FileWriter writer = new FileWriter(scheduleFile);
     			writer.write(JSONUtils.toJSONString(obj, 4));
